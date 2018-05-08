@@ -1,20 +1,11 @@
-# WKActionSheetDismiss
+//
+//  SOFANavigationController.swift
+//  DApps
+//
+//  Created by Elroy on 2018/5/7.
+//  Copyright © 2018年 DApp. All rights reserved.
+//
 
-# 模态UIViewController中WebView的H5弹出Camera/ImagePicker/ActionSheet dismiss问题
-
-SOFAWebViewController中有一个WebView，加载了H5页面， H5页面有长按手势，长按二维码弹出了ActionSheet, 然后点击空白部分或取消按钮，程序直接退出到了 PushAViewController 页面。
-
-ViewController push-> PushAViewController present-> SOFAWebViewController
-
-## 如何解决？
-
-### 使WKActionSheet找不到presentingViewController
-
-WKActionSheet是断点调试打印出来的。如果像是调用Camera等则使用UIDocumentPickerViewController、UIImagePickerController
-
-###### 自定义SOFANavigationController
-
-```
 import UIKit
 
 class SOFANavigationController: UINavigationController {
@@ -41,6 +32,7 @@ class SOFANavigationController: UINavigationController {
     }
 
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+//        plog(viewControllerToPresent)
         if viewControllerToPresent.isKind(of: UIDocumentPickerViewController.self)
             || viewControllerToPresent.isKind(of: UIImagePickerController.self)
             || viewControllerToPresent.isKind(of: NSClassFromString("WKActionSheet")!) {
@@ -70,28 +62,3 @@ class SOFANavigationController: UINavigationController {
         super.setViewControllers(viewControllers, animated: animated)
     }
 }
-```
-
-#### 在SOFAWebViewController中：
-
-重写该方法
-
-```
-override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        if self.presentingViewController != nil {
-            super.dismiss(animated: flag, completion: completion)
-        }
-    }
-```
-
-关闭按钮
-
-```
-func closeAction() {
-
-        if let navigationCtrl = self.navigationController as? SOFANavigationController {
-            navigationCtrl._flag = false
-        }
-        dismiss(animated: true)
-    }
-```
