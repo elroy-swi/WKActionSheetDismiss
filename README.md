@@ -76,7 +76,7 @@ class SOFANavigationController: UINavigationController {
 
 重写该方法
 
-```
+``` swift
 override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
         if self.presentingViewController != nil {
             super.dismiss(animated: flag, completion: completion)
@@ -86,7 +86,7 @@ override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
 
 关闭按钮
 
-```
+``` swift
 func closeAction() {
 
         if let navigationCtrl = self.navigationController as? SOFANavigationController {
